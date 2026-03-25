@@ -12,7 +12,13 @@ async function main() {
     // eslint-disable-next-line no-console
     console.error("MongoDB connection failed. Server will start without DB:", err?.message || err);
   }
+    app.get("/", (req, res) => {
+  res.send("API is running 🚀");
+});
 
+app.get("/health", (req, res) => {
+  res.json({ status: "OK" });
+});
   const port = env.port;
   app.listen(port, () => {
     // eslint-disable-next-line no-console
