@@ -1,0 +1,11 @@
+{
+  "name": "golf-charity-platform",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix client run dev",
+    "build": "npm --prefix client install && npm --prefix client run build",
+    "preview": "npm --prefix client run preview"
+  }
+}
+
