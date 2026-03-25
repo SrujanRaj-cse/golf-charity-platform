@@ -135,7 +135,13 @@ export default function TopNavbar() {
             {notifOpen ? (
               <div
                 role="menu"
-                className="absolute right-0 mt-2 w-[92vw] sm:w-[360px] max-w-[90vw] bg-slate-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                className={[
+                  // Mobile-first: fixed inset panel so it never overflows left/right.
+                  "fixed left-3 right-3 top-[64px] mt-2",
+                  // Desktop: anchored dropdown.
+                  "sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-[360px] sm:max-w-[360px]",
+                  "bg-slate-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-w-full"
+                ].join(" ")}
               >
                 <div className="p-3 border-b border-white/10 flex items-center justify-between gap-3">
                   <div>
@@ -154,13 +160,13 @@ export default function TopNavbar() {
                 ) : notifBusy ? (
                   <div className="p-3 text-sm text-slate-400">Loading notifications...</div>
                 ) : notifs.length ? (
-                  <div className="max-h-[60vh] overflow-auto p-2 space-y-2">
+                  <div className="max-h-[60vh] overflow-auto p-2 space-y-2 overscroll-contain">
                     {notifs.map((n) => (
                       <button
                         key={n._id}
                         type="button"
                         role="menuitem"
-                        className={`w-full text-left p-3 rounded-xl border transition ${
+                        className={`w-full text-left p-3 rounded-xl border transition max-w-full ${
                           n.status === "unread" ? "bg-white/10 border-emerald-400/30" : "bg-white/5 border-white/10"
                         } hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400/30`}
                         onClick={async () => {
@@ -169,10 +175,12 @@ export default function TopNavbar() {
                           setNotifOpen(false);
                         }}
                       >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
+                        <div className="flex items-start justify-between gap-3 max-w-full">
+                          <div className="min-w-0 max-w-full">
                             <div className="text-sm font-semibold text-white truncate">{n.title}</div>
-                            <div className="mt-1 text-xs text-slate-300 line-clamp-2">{n.message}</div>
+                            <div className="mt-1 text-xs text-slate-300 break-words whitespace-normal line-clamp-3">
+                              {n.message}
+                            </div>
                           </div>
                           {n.kind ? (
                             <div className="text-[10px] text-slate-500 whitespace-nowrap mt-1">

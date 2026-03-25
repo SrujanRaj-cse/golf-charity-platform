@@ -1,7 +1,8 @@
 import React, { useContext, useMemo } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { NavLink, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/AuthProvider";
 import Sidebar from "../../components/Sidebar.jsx";
+import AdminTopNavbar from "../../components/AdminTopNavbar.jsx";
 
 import AdminUsers from "./AdminUsers.jsx";
 import AdminRunDraw from "./AdminRunDraw.jsx";
@@ -9,6 +10,7 @@ import AdminWinners from "./AdminWinners.jsx";
 import AdminCharities from "./AdminCharities.jsx";
 import AdminAnalytics from "./AdminAnalytics.jsx";
 import AdminNotifications from "./AdminNotifications.jsx";
+import AdminProfileSettings from "./AdminProfileSettings.jsx";
 
 export default function AdminPanel() {
   const auth = useContext(AuthContext);
@@ -16,21 +18,24 @@ export default function AdminPanel() {
 
   const items = useMemo(
     () => [
-      { to: "users", label: "Users" },
-      { to: "run-draw", label: "Run Draw" },
-      { to: "winners", label: "Winners" },
-      { to: "charities", label: "Charities" },
-      { to: "notifications", label: "Notifications" },
-      { to: "analytics", label: "Analytics" }
+      { to: "/admin/users", label: "Users" },
+      { to: "/admin/run-draw", label: "Run Draw" },
+      { to: "/admin/winners", label: "Winners" },
+      { to: "/admin/charities", label: "Charities" },
+      { to: "/admin/notifications", label: "Notifications" },
+      { to: "/admin/analytics", label: "Analytics" },
+      { to: "/admin/profile", label: "Profile" }
     ],
     []
   );
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 md:px-5 py-6 flex gap-4">
+      <AdminTopNavbar />
+
+      <div className="max-w-7xl mx-auto px-4 md:px-5 pt-4 pb-6 flex gap-4">
         <Sidebar
-          items={items.map((it) => ({ ...it, to: it.to }))}
+          items={items}
           onLogout={() => {
             auth.logout();
             navigate("/login", { replace: true });
@@ -48,14 +53,32 @@ export default function AdminPanel() {
             </div>
           </div>
 
+          <nav className="md:hidden mb-4 flex gap-2 overflow-x-auto pb-1">
+            {items.map((it) => (
+              <NavLink
+                key={it.to}
+                to={it.to}
+                className={({ isActive }) =>
+                  [
+                    "whitespace-nowrap px-3 py-2 rounded-xl border transition text-sm",
+                    isActive ? "bg-white/10 border-white/10" : "bg-white/5 border-white/10 hover:bg-white/10"
+                  ].join(" ")
+                }
+              >
+                {it.label}
+              </NavLink>
+            ))}
+          </nav>
+
           <Routes>
-            <Route path="/" element={<Navigate to="users" replace />} />
+            <Route index element={<Navigate to="/admin/users" replace />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="run-draw" element={<AdminRunDraw />} />
             <Route path="winners" element={<AdminWinners />} />
             <Route path="charities" element={<AdminCharities />} />
             <Route path="notifications" element={<AdminNotifications />} />
             <Route path="analytics" element={<AdminAnalytics />} />
+            <Route path="profile" element={<AdminProfileSettings />} />
             <Route path="*" element={<Navigate to="/admin/users" replace />} />
           </Routes>
         </main>

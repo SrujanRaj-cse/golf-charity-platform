@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../api/client";
 import { AuthContext } from "../../auth/AuthProvider";
 
 export default function ProfileSettings() {
   const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [charities, setCharities] = useState([]);
   const [charBusy, setCharBusy] = useState(false);
@@ -137,6 +139,22 @@ export default function ProfileSettings() {
           <span className="text-slate-200">
             {subscriptionStart ? new Date(subscriptionStart).toLocaleDateString() : "—"}
           </span>
+        </div>
+
+        <div className="mt-5 pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
+          <div className="text-xs text-slate-500">
+            Need to switch accounts? You can log out safely from here.
+          </div>
+          <button
+            type="button"
+            className="btn w-full sm:w-auto bg-white/5 border border-white/10 hover:bg-white/10"
+            onClick={() => {
+              auth.logout();
+              navigate("/login", { replace: true });
+            }}
+          >
+            Log out
+          </button>
         </div>
       </div>
 
